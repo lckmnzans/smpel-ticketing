@@ -1,21 +1,47 @@
 <template>
     <div class="container border border-primary">
-        <DetailCard />
+        <div class="header">
+            <Header :application-title="'Aplikasi Sederhana'" />
+        </div>
+        <div class="main-content border border-1 my-2">
+            <p>{{ message }}</p>
+        </div>
         <div class="footer">
-            <p>Created by Lukman Sanusi</p>
+            <Footer :footer-message="'Dibuat oleh Lukman Sanusi'" />
         </div>
     </div>
 </template>
 <script>
-import DetailCard from '@/components/FormCard.vue';
+import Header from '@/components/Header.vue';
+import FormCard from '@/components/FormCard.vue';
+import Footer from '@/components/Footer.vue';
 export default {
-    components: { DetailCard }
+    components: { Header, FormCard, Footer },
+    data() {
+        return {
+            message: 'Tiket kosong'
+        }
+    }
 }
 </script>
 <style scoped>
+.header {
+    background-color:darkslateblue;
+    color: white;
+}
+
+.main-content {
+    min-height: 240px;
+
+    p {
+        text-align: center;
+    }
+}
+
 .footer {
     position: relative;
     background-color: cornflowerblue;
+    color: white;
     height: 2rem;
     width: inherit;
     margin-top: auto;
