@@ -4,8 +4,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 
-import App from './App.vue'
-import router from './router'
+import App from '@/App.vue'
+import router from '@/router/route'
 
 const app = createApp(App)
 
