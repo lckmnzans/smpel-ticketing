@@ -1,48 +1,62 @@
 <template>
-    <div class="d-flex flex-row p-2 my-2">
-        <form class="border border-1 p-2">
-            <div class="form-group">
-                <div class="mb-2">
-                    <label for="" class="form-label">Pesan 1</label>
-                    <input type="text" v-model="pesan1" class="form-control" disabled/>
-                </div>
-
-                <div class="mb-2">
-                    <label for="" class="form-label">Pesan 2</label>
-                    <input type="text" v-model="pesan2" class="form-control" disabled/>
-                </div>
-
-                <div class="mb-2">
-                    <label for="" class="form-label">Komentar</label>
-                    <textarea v-model="komentar" class="form-control" placeholder="komentar anda..."></textarea>
-                </div>
+    <div class="d-flex flex-row">
+        <form class="form-group">
+            <div class="mb-2 form-input">
+                <label for="" class="form-label">Nama Lengkap</label>
+                <input type="text" v-model="namaLengkap" class="form-control" />
             </div>
-            <button type="submit" class="btn btn-primary">Simpan</button>
+
+            <div class="mb-2 form-input">
+                <label for="" class="form-label">Email</label>
+                <input type="text" v-model="email" class="form-control" />
+            </div>
+
+            <div class="mb-2 form-input">
+                <label for="" class="form-label">Nomor HP</label>
+                <input type="text" v-model="kontak" class="form-control" />
+            </div>
+
+            <div class="mb-2" id="ticket-detail">
+                <h5>Detil Tiket</h5>
+                <hr>
+                <label for="" class="form-label">Ringkasan</label>
+                <input type="text" v-model="judul" class="form-control" />
+                <textarea v-model="detail" class="form-control" placeholder="Detail dari bantuan..."></textarea>
+                <button type="submit" class="btn btn-primary mt-5">Simpan</button>
+            </div>
         </form>
-        <div class="border border-1 mx-2 p-2">
-            <p>{{ compilation }}</p>
-        </div>
     </div>
 </template>
 
 <script>
 export default {
-    computed: {
-        compilation() {
-            return this.pesan1 + this.pesan2 + this.komentar;
-        }
-    },
     data() {
         return {
-            pesan1: 'Greeting, World!',
-            pesan2: 'Greeting',
-            komentar: 'Greetings all',
-            compilation: '',
+            namaLengkap: '',
+            email: '',
+            kontak: '',
+            judul: '',
+            detail: '',
         }
     }
 }
 </script>
 
 <style scoped>
+.form-group {
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
 
+@media (min-width: 768px) {
+    .form-input {
+        width: 45%;
+    }
+
+    #ticket-detail {
+        width: 100%;
+    }
+}
 </style>
