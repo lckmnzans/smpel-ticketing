@@ -1,7 +1,10 @@
 <template>
-    <div class="d-flex flex-row align-items-center justify-content-between border border-1 p-2">
+    <div class="d-flex flex-row align-items-center justify-content-between p-2">
         <h5>{{ applicationTitle }}</h5>
-        <span class="material-symbols-outlined">account_box</span>
+        <div>
+            <span class="material-symbols-outlined">account_box</span>
+            <span class="material-symbols-outlined">more_vert</span>
+        </div>
     </div>
 </template>
 
