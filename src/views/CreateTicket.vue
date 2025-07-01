@@ -4,7 +4,7 @@
             <h4>Buat Tiket Bantuan</h4>
             <p class="text-secondary">Halaman ini adalah formulir untuk membuat tiket bantuan baru. Isikan formulir dan sistem layanan bantuan akan mencoba untuk merespon tiket bantuan secepatnya.   </p>
 
-             <div class="d-flex flex-row">
+            <div class="d-flex flex-row">
                 <form class="form-group">
                     <div class="mb-2 form-input">
                         <label for="" class="form-label">Nama Lengkap</label>
