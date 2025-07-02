@@ -8,7 +8,7 @@
                     <p class="text-secondary">{{ ticket.email }}</p>
                     <p>{{ ticket.dibuatTanggal }}</p>
                 </div>
-                <span class="material-symbols-outlined">print</span>
+                <button class="border border-0 bg-transparent" @click="printTicket"><span class="material-symbols-outlined">print</span></button>
             </div>
             <hr>
             <p>{{ ticket.detail }}</p>
@@ -31,6 +31,7 @@
     </div>
 </template>
 <script>
+import { jsPDF } from 'jspdf';
 import api from '@/api/ticket.api';
 export default {
     props: ['ticketId','index'],
@@ -111,6 +112,37 @@ export default {
                 default:
                     return 'primary';
             }
+        },
+        printTicket() {
+            const doc = new jsPDF();
+            const ticket = this.ticket;
+
+            doc.setFontSize(20);
+            doc.text('TIKET BANTUAN', 105, 20, null, null, 'center');
+
+            doc.setFontSize(12);
+            doc.text('Judul', 20, 40);
+            doc.text(`: ${ticket.judul}`, 60, 40);
+            doc.text('Nama', 20, 50);
+            doc.text(`: ${ticket.namaLengkap}`, 60, 50);
+            doc.text('Email', 20, 60);
+            doc.text(`: ${ticket.email}`, 60, 60);
+            doc.text('Kontak', 20, 70);
+            doc.text(`: ${ticket.kontak}`, 60, 70);
+            doc.text('Status tiket', 20, 80);
+            doc.text(`${ticket.detail} \n\n\n\nBalasan tiket \n\n${ticket.komentar}`, 20, 100);
+
+            doc.setLineWidth(0.5);
+            doc.line(20, 30, 190, 30);
+            doc.line(20, 90, 190, 90);
+
+            doc.setDrawColor('#1adb27');
+            doc.setFillColor(255,255,255);
+            doc.roundedRect(60+2, 80-5, 20, 10-2, 2, 2, "FD");
+            doc.text(`: ${ticket.status}`, 60, 80);
+
+            window.open(doc.output('bloburl'), '_blank');
+            // doc.save('tiket-laporan.pdf');
         }
     }
 }
