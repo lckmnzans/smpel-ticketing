@@ -1,7 +1,8 @@
 <template>
     <div class="header d-flex flex-row align-items-center justify-content-between p-2 px-4">
         <h5>{{ applicationTitle }}</h5>
-        <div class="d-flex flex-row">
+        <div class="d-flex flex-row gap-1">
+            <span class="text me-2">Halo, {{ role }}</span>
             <span class="material-symbols-outlined">account_box</span>
             <span class="material-symbols-outlined">more_vert</span>
         </div>
@@ -14,6 +15,11 @@ export default {
         applicationTitle: {
             type: String,
             required: true
+        }
+    },
+    data() {
+        return {
+            role: localStorage.getItem('email')
         }
     }
 }
