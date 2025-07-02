@@ -5,30 +5,30 @@
             <p class="text-secondary">Halaman ini adalah formulir untuk membuat tiket bantuan baru. Isikan formulir dan sistem layanan bantuan akan mencoba untuk merespon tiket bantuan secepatnya.   </p>
 
             <div class="d-flex flex-row">
-                <form class="form-group">
+                <form class="form-group" @submit.prevent="createTicket">
                     <div class="mb-2 form-input">
                         <label for="" class="form-label">Nama Lengkap</label>
-                        <input type="text" v-model="tiket.namaLengkap" class="form-control" />
+                        <input type="text" v-model="tiket.namaLengkap" class="form-control" required/>
                     </div>
 
                     <div class="mb-2 form-input">
                         <label for="" class="form-label">Email</label>
-                        <input type="text" v-model="tiket.email" class="form-control" />
+                        <input type="text" v-model="tiket.email" class="form-control" required/>
                     </div>
 
                     <div class="mb-2 form-input">
                         <label for="" class="form-label">Nomor HP</label>
-                        <input type="text" v-model="tiket.kontak" class="form-control" />
+                        <input type="text" v-model="tiket.kontak" class="form-control" required/>
                     </div>
 
                     <div class="my-4" id="ticket-detail">
                         <h6>Detil Tiket</h6>
                         <hr>
                         <label for="" class="form-label">Ringkasan</label>
-                        <input type="text" v-model="tiket.judul" class="form-control" />
+                        <input type="text" v-model="tiket.judul" class="form-control" required/>
                         <br>
-                        <textarea v-model="tiket.detail" rows="5" class="form-control" placeholder="Detail dari bantuan..."></textarea>
-                        <button type="submit" class="btn btn-primary mt-5 w-50">Buat Tiket</button>
+                        <textarea v-model="tiket.detail" rows="5" class="form-control" placeholder="Detail dari bantuan..." required></textarea>
+                        <button type="submit" class="btn btn-primary mt-5 w-50" :disabled="isFormEmpty">Buat Tiket</button>
                     </div>
                 </form>
             </div>
@@ -36,7 +36,13 @@
     </div>
 </template>
 <script>
+import api from '@/api/ticket.api';
 export default {
+    computed: {
+        isFormEmpty() {
+            return Object.values(this.tiket).includes('');
+        }
+    },
     data() {
         return {
             tiket: {
@@ -44,8 +50,36 @@ export default {
                 email: '',
                 kontak: '',
                 judul: '',
-                detail: '',
+                detail: ''
             }
+        }
+    },
+    created() {
+        this.tiket.email = localStorage.getItem('email');
+    },
+    methods: {
+        createTicket() {
+            const tiket = this.tiket;
+            tiket.komentar = "";
+            tiket.pengomentar = "";
+            tiket.status = "menunggu";
+            tiket.asosiasiDokumen = "";
+            tiket.userId = localStorage.getItem('id');
+
+            const token = localStorage.getItem('accessToken');
+            this.axios(api.addTicket(tiket, token))
+            .then(response => {
+                if (response.status == 200) {
+                    const data = response.data;
+
+                    alert('Tiket berhasil dibuat');
+                    console.log(data);
+                }
+                console.log(`Status code: ${response.status}`)
+            })
+            .catch(err => {
+                console.log('Ada kesalahan');
+            })
         }
     }
 }
