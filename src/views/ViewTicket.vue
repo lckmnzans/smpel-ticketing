@@ -13,11 +13,20 @@
             <hr>
             <p>{{ ticket.detail }}</p>
             <hr>
-            <p :class="`text-${statusTicket(ticket.status)}`">{{ ticket.status }}</p>
+            <div class="d-flex flex-row justify-content-between">
+                <p :class="`text-${statusTicket(ticket.status)}`">{{ ticket.status }}</p>
+                <router-link :to="{ hash: '#reply' }" :hidden="!isAdmin" title="Balas"><span class="material-symbols-outlined">reply</span></router-link>
+            </div>
         </div>
         <div class="view-ticket border border-1 my-2 p-4" v-if="ticket.komentar">
             <p class="text-secondary">Tiket dibalas oleh <b>{{ ticket.pengomentar }}</b></p>
             <p>{{ ticket.komentar }}</p>
+        </div>
+        <div class="view-ticket border border-1 my-2 p-4" v-if="showReplyField">
+            <form @submit="updateTicket">
+                <textarea class="form-control" rows="5" v-model="ticketReply.balasan"></textarea>
+                <button type="submit" class="btn btn-primary mt-5 w-25" :disabled="!ticketReply.balasan">Kirim balasan</button>
+            </form>
         </div>
     </div>
 </template>
@@ -27,6 +36,8 @@ export default {
     props: ['ticketId','index'],
     data() {
         return {
+            isAdmin: false,
+            showReplyField: false,
             ticket: {
                 id: '0',
                 namaLengkap: 'John Doe',
@@ -39,10 +50,22 @@ export default {
                 asosiasiDokumen: '',
                 status: 'diproses',
                 userId: '',
+            },
+            ticketReply: {
+                balasan: '',
+                pembalas: ''
             }
         }
     },
+    watch: {
+        '$route'(to) {
+            this.showReplyField = to.hash === '#reply';
+        }
+    },
     created() {
+        const isAdmin = localStorage.getItem('isAdmin');
+        this.isAdmin = isAdmin === 'true' ? true : false;
+
         this.fetchData();
     },
     methods: {
@@ -61,6 +84,22 @@ export default {
             })
             .catch(err => {
                 console.log('Ada kesalahan');
+            })
+        },
+        updateTicket() {
+            const ticketReply = this.ticketReply;
+            ticketReply.pembalas = localStorage.getItem('email');
+            const ticketId = this.index;
+            const adminId = localStorage.getItem('id');
+            this.axios(api.updateTicket(ticketId, adminId, ticketReply))
+            .then(response => {
+                const data = response.data;
+
+                alert('Sudah terupdate');
+                this.$router.back();
+            })
+            .catch(err => {
+                console.log('Ada kesalahan')
             })
         },
         statusTicket(status) {

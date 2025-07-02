@@ -26,5 +26,28 @@ export default {
                 'authorization': 'Bearer ' + localStorage.getItem('accessToken')
             }
         }
+    },
+    getAllTickets: () => {
+        return {
+            method: 'GET',
+            url: `http://localhost:8080/api/v1/ticket`,
+            headers: {
+                'authorization': 'Bearer ' + localStorage.getItem('accessToken')
+            }
+        }
+    },
+    updateTicket: (ticketId, adminId, response) => {
+        return {
+            method: 'PATCH',
+            url: `http://localhost:8080/api/v1/ticket/${ticketId}`,
+            data: {
+                pengomentar: response.pembalas,
+                komentar: response.balasan
+            },
+            headers: {
+                'content-type': 'application/json',
+                'authorization': 'Bearer ' + localStorage.getItem('accessToken')
+            }
+        }
     }
 }
