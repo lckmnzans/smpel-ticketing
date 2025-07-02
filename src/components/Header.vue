@@ -3,8 +3,8 @@
         <h5>{{ applicationTitle }}</h5>
         <div class="d-flex flex-row gap-1">
             <span class="text me-2">Halo, {{ role }}</span>
-            <span class="material-symbols-outlined">account_box</span>
-            <span class="material-symbols-outlined">more_vert</span>
+            <button class="border border-0 bg-transparent"><span class="material-symbols-outlined text-white">account_box</span></button>
+            <button class="border border-0 bg-transparent" @click.prevent="logout"><span class="material-symbols-outlined text-white">logout</span></button>
         </div>
     </div>
 </template>
@@ -19,7 +19,24 @@ export default {
     },
     data() {
         return {
-            role: localStorage.getItem('email')
+            role: 'User'
+        }
+    },
+    created() {
+        const isAdmin = localStorage.getItem('isAdmin');
+        if (isAdmin == 'true') {
+            this.role = 'Admin';
+        } else {
+            this.role = localStorage.getItem('email');
+        }
+    },
+    methods: {
+        logout() {
+            localStorage.removeItem('id');
+            localStorage.removeItem('email');
+            localStorage.removeItem('isAdmin');
+            localStorage.removeItem('accessToken');
+            this.$router.replace({ name: 'login' });
         }
     }
 }

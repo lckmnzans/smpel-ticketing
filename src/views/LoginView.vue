@@ -34,6 +34,7 @@ export default {
                     const data = response.data;
                     localStorage.setItem('id', data.data.id)
                     localStorage.setItem('email', data.data.email);
+                    localStorage.setItem('isAdmin', data.data.isAdmin);
                     localStorage.setItem('accessToken', data.data.token);
                     alert('Login berhasil')
                     this.$router.replace({ name: 'home' });
