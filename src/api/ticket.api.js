@@ -36,6 +36,16 @@ export default {
             }
         }
     },
+    getTicketAttachment: (ticketId) => {
+        return {
+            method: 'GET',
+            url: `http://localhost:8080/api/v1/ticket?ticketId=${ticketId}`,
+            responseType: 'blob',
+            headers: {
+                'authorization': 'Bearer ' + localStorage.getItem('accessToken')
+            }
+        }
+    },
     updateTicket: (ticketId, adminId, response) => {
         return {
             method: 'PATCH',
@@ -47,6 +57,21 @@ export default {
             headers: {
                 'content-type': 'application/json',
                 'authorization': 'Bearer ' + localStorage.getItem('accessToken')
+            }
+        }
+    },
+    updateTicketWithDocAttachment: (ticketId, document) => {
+        const formData = new FormData();
+        formData.append('ticketId', ticketId);
+        formData.append('file', document);
+
+        return {
+            method: 'POST',
+            url: `http://localhost:8080/api/v1/ticket/doc`,
+            data: formData,
+            headers: {
+                "content-type": "multipart/form-data",
+                "authorization": "Bearer " + localStorage.getItem('accessToken')
             }
         }
     }

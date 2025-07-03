@@ -21,6 +21,11 @@
                         <input type="text" v-model="tiket.kontak" class="form-control" required/>
                     </div>
 
+                    <div class="mb-2 form-input">
+                        <label for="" class="form-label">Dokumen tambahan</label>
+                        <input type="file" class="form-control" id="file" accept="application/pdf" @change="handleDocumentInput" />
+                    </div>
+
                     <div class="my-4" id="ticket-detail">
                         <h6>Detil Tiket</h6>
                         <hr>
@@ -28,7 +33,8 @@
                         <input type="text" v-model="tiket.judul" class="form-control" required/>
                         <br>
                         <textarea v-model="tiket.detail" rows="5" class="form-control" placeholder="Detail dari bantuan..." required></textarea>
-                        <button type="submit" class="btn btn-primary mt-5 w-50" :disabled="isFormEmpty">Buat Tiket</button>
+                        
+                        <button type="submit" class="btn btn-primary my-5 w-50" :disabled="isFormEmpty">Buat Tiket</button>
                     </div>
                 </form>
             </div>
@@ -51,7 +57,8 @@ export default {
                 kontak: '',
                 judul: '',
                 detail: ''
-            }
+            },
+            dokumen: null
         }
     },
     created() {
@@ -72,14 +79,45 @@ export default {
                 if (response.status == 200) {
                     const data = response.data;
 
-                    alert('Tiket berhasil dibuat');
+                    const ticketId = data?.data?.id;
+                    if (ticketId && this.dokumen !== null) {
+                        this.createTicketAttachDoc(ticketId);
+                    }
                     console.log(data);
+                    alert('Tiket berhasil dibuat');
                 }
                 console.log(`Status code: ${response.status}`)
             })
             .catch(err => {
                 console.log('Ada kesalahan');
             })
+        },
+        createTicketAttachDoc(ticketId) {
+            this.axios(api.updateTicketWithDocAttachment(ticketId, this.dokumen))
+            .then(response => {
+                if (response.status == 200) {
+                    const data = response.data;
+
+                    console.log(data);
+                    this.dokumen = null;
+                }
+            })
+            .catch(err => {
+                console.log('Ada kesalahan');
+            })
+            .finally(() => {
+                return;
+            })
+        },
+        handleDocumentInput(event) {
+            const file = event.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                this.dokumen = file;
+            } else {
+                alert('Hanya dokumen pdf yang dapat diunggah!');
+                event.target.value = "";
+                this.dokumen = null;
+            }
         }
     }
 }

@@ -10,12 +10,14 @@
                 </div>
                 <button class="border border-0 bg-transparent" @click="printTicket"><span class="material-symbols-outlined">print</span></button>
             </div>
+            <button class="border border-0 bg-transparent" v-if="dokumen" @click.prevent="openAttachment"><span class="badge rounded-pill text-bg-secondary">attachment</span></button>
             <hr>
             <p>{{ ticket.detail }}</p>
             <hr>
             <div class="d-flex flex-row justify-content-between">
                 <p :class="`text-${statusTicket(ticket.status)}`">{{ ticket.status }}</p>
-                <router-link :to="{ hash: '#reply' }" :hidden="!isAdmin" title="Balas"><span class="material-symbols-outlined">reply</span></router-link>
+                <!-- <router-link :to="{ hash: '#reply' }" :hidden="!isAdmin" title="Balas"><span class="material-symbols-outlined">reply</span></router-link> -->
+                <button class="border border-0 bg-transparent" @click.prevent="showReplyField = !showReplyField" :hidden="!isAdmin" title="Balas"><span class="material-symbols-outlined">reply</span></button>
             </div>
         </div>
         <div class="view-ticket border border-1 my-2 p-4" v-if="ticket.komentar">
@@ -55,14 +57,15 @@ export default {
             ticketReply: {
                 balasan: '',
                 pembalas: ''
-            }
+            },
+            dokumen: null
         }
     },
-    watch: {
-        '$route'(to) {
-            this.showReplyField = to.hash === '#reply';
-        }
-    },
+    // watch: {
+    //     '$route'(to) {
+    //         this.showReplyField = to.hash === '#reply';
+    //     }
+    // },
     created() {
         const isAdmin = localStorage.getItem('isAdmin');
         this.isAdmin = isAdmin === 'true' ? true : false;
@@ -79,12 +82,27 @@ export default {
                     const data = response.data;
 
                     this.ticket = data.data;
+                    this.fetchAttachment(this.index);
                     console.log(data);
                 }
                 console.log(`Status code: ${response.status}`)
             })
             .catch(err => {
                 console.log('Ada kesalahan');
+            })
+        },
+        fetchAttachment(ticketId) {
+            this.axios(api.getTicketAttachment(ticketId))
+            .then(response => {
+                if (response.status == 200) {
+                    this.dokumen = URL.createObjectURL(response.data);
+                }
+                console.log(`Status code: ${response.status}`)
+            })
+            .catch(err => {
+                console.log('Ada kesalahan');
+                console.log(err);
+                this.dokumen = null;
             })
         },
         updateTicket() {
@@ -97,7 +115,6 @@ export default {
                 const data = response.data;
 
                 alert('Sudah terupdate');
-                this.$router.back();
             })
             .catch(err => {
                 console.log('Ada kesalahan')
@@ -130,7 +147,7 @@ export default {
             doc.text('Kontak', 20, 70);
             doc.text(`: ${ticket.kontak}`, 60, 70);
             doc.text('Status tiket', 20, 80);
-            doc.text(`${ticket.detail} \n\n\n\nBalasan tiket \n\n${ticket.komentar}`, 20, 100);
+            doc.text(`${ticket.detail} \n\n\n \n\n${ticket.komentar}`, 20, 100);
 
             doc.setLineWidth(0.5);
             doc.line(20, 30, 190, 30);
@@ -141,9 +158,19 @@ export default {
             doc.roundedRect(60+2, 80-5, 20, 10-2, 2, 2, "FD");
             doc.text(`: ${ticket.status}`, 60, 80);
 
+            doc.setFontSize(12);
+            doc.setTextColor(100);
+            doc.text(`Dibalas oleh: ${ticket.pengomentar}`, 20, 110);
+
             window.open(doc.output('bloburl'), '_blank');
             // doc.save('tiket-laporan.pdf');
+        },
+        openAttachment() {
+            window.open(this.dokumen, '_blank');
         }
+    },
+    beforeUnmount() {
+        this.dokumen = null;
     }
 }
 </script>
