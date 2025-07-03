@@ -12,5 +12,18 @@ export default {
                 'content-type': 'application/json'
             }
         }
+    },
+    register: (user) => {
+        return {
+            method: 'POST',
+            url: `http://localhost:8080/api/v1/account/register`,
+            data: {
+                'email': user.email,
+                'password': user.password
+            },
+            headers: {
+                'content-type': 'application/json'
+            }
+        }
     }
 }

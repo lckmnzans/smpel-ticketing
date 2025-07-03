@@ -153,14 +153,18 @@ export default {
             doc.line(20, 30, 190, 30);
             doc.line(20, 90, 190, 90);
 
-            doc.setDrawColor('#1adb27');
+            const color = this.ticket.status == 'menunggu' ? '#35a3de' : '#1adb27'
+            doc.setDrawColor(color);
             doc.setFillColor(255,255,255);
-            doc.roundedRect(60+2, 80-5, 20, 10-2, 2, 2, "FD");
+            const width = this.ticket.status == 'menunggu' ? 20+1 : 20-6;
+            doc.roundedRect(60+2, 80-5, width, 10-2, 2, 2, "FD");
             doc.text(`: ${ticket.status}`, 60, 80);
 
-            doc.setFontSize(12);
-            doc.setTextColor(100);
-            doc.text(`Dibalas oleh: ${ticket.pengomentar}`, 20, 110);
+            if (this.ticket.pengomentar) {
+                doc.setFontSize(12);
+                doc.setTextColor(100);
+                doc.text(`Dibalas oleh: ${ticket.pengomentar}`, 20, 110);
+            }
 
             window.open(doc.output('bloburl'), '_blank');
             // doc.save('tiket-laporan.pdf');
